@@ -22,8 +22,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 
 // Extend HttpServlet class
-@WebServlet("/HelloWorld")
-public class HelloWorld extends HttpServlet {
+@WebServlet("/Details")
+public class Details extends HttpServlet {
 	static Connection conn = null;
 	
 	private String message = "";
@@ -42,33 +42,43 @@ public class HelloWorld extends HttpServlet {
 		message = "";
 		// Actual logic goes here.
 		// PrintWriter out = response.getWriter();
-		 ArrayList<String> firstNameList = new ArrayList<String>();
-		 ArrayList<String> lastNameList = new ArrayList<String>();
-		 ArrayList<String> customerIDList = new ArrayList<String>();
+		 String custId = request.getParameter("customerID");
+		 ArrayList<String> addressList = new ArrayList<String>();
+		 ArrayList<String> cityList = new ArrayList<String>();
+		 ArrayList<String> stateIDList = new ArrayList<String>();
+		 ArrayList<String> postalList = new ArrayList<String>();
+		 ArrayList<String> phoneIDList = new ArrayList<String>();
 		try {
-			String sql = "select CUST_FIRST_NAME,CUST_LAST_NAME,CUSTOMER_ID from DEMO_CUSTOMERS";
+			String sql = "select CUST_STREET_ADDRESS1,CUST_CITY,CUST_STATE,CUST_POSTAL_CODE,PHONE_NUMBER1 from DEMO_CUSTOMERS";
 			ResultSet result;
 			result = getFromDB(sql);
-			String firstName = "";
-			String lastName = "";
-			String customerID = "";
+			String address = "";
+			String city = "";
+			String state = "";
+			String postal = "";
+			String phone = "";
 			while(result.next()){
-			firstName = result.getString("CUST_FIRST_NAME");
-			lastName = result.getString("CUST_LAST_NAME");
-			customerID = result.getString("CUSTOMER_ID");
-			firstNameList.add(firstName);
-			lastNameList.add(lastName);
-			customerIDList.add(customerID);
-			}
-			message += "<div class=\"container\"><h2>Customer Info</h2><p>Customer Names</p> "
-					+ "<table class= \"table\"><thead><tr><th>First Name</th><th>Last Name</th></tr></thead><tbody>";
-					for (int i = 0; i < firstNameList.size(); i++){
-			firstName = firstNameList.get(i);
-			lastName = lastNameList.get(i);
-			customerID = customerIDList.get(i);
+				address = result.getString("CUST_STREET_ADDRESS1");
+				city = result.getString("CUST_CITY");
+				state = result.getString("CUST_STATE");
+				postal = result.getString("CUST_POSTAL_CODE");
+				phone = result.getString("PHONE_NUMBER1");
+			addressList.add(address);
+			cityList.add(city);
+			stateIDList.add(state);
+			postalList.add(postal);
+			phoneIDList.add(phone);			}
+			message += "<div class=\"container\"><h2>Details</h2><p>Customer Details</p> "
+					+ "<table class= \"table\"><thead><tr><th>Address</th><th>City</th><th>State</th><th>Postal Code</th><th>Phone #</th></tr></thead><tbody>";
+			int i = Integer.parseInt(custId)-1;
+			address =addressList.get(i);
+			city = cityList.get(i);
+			state = stateIDList.get(i);
+			postal = postalList.get(i);
+			phone = phoneIDList.get(i);
 		
-					message += "<tr><td><a href=\"Details?customerID="+ customerID + "\">"+firstName + "</a></td><td><a href=\"Details?customerID="+customerID+ "\">" + lastName + "</a></td></tr>";
-			}
+					message += "<tr><td>"+ address +"</td><td>"+ city + "</td><td>"+state +"</td><td>" + postal + "</td><td>"+ phone +"</td></tr>";
+			
 			message += "</tbody></table></div>";
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -76,7 +86,7 @@ public class HelloWorld extends HttpServlet {
 		}
 
 		request.setAttribute("message", message);
-		getServletContext().getRequestDispatcher("/output.jsp").forward(
+		getServletContext().getRequestDispatcher("/details.jsp").forward(
 				request, response);
 		
 		
