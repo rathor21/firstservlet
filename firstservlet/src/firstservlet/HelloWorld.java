@@ -25,8 +25,7 @@ import javax.servlet.http.*;
 @WebServlet("/HelloWorld")
 public class HelloWorld extends HttpServlet {
 	static Connection conn = null;
-	static ArrayList<String> firstNameList = new ArrayList<String>();
-	static ArrayList<String> lastNameList = new ArrayList<String>();
+	
 	private String message = "";
 
 	public void init() throws ServletException {
@@ -40,10 +39,11 @@ public class HelloWorld extends HttpServlet {
 			throws ServletException, IOException {
 		// Set response content type
 		response.setContentType("text/html");
-	
+		message = "";
 		// Actual logic goes here.
 		// PrintWriter out = response.getWriter();
-		
+		 ArrayList<String> firstNameList = new ArrayList<String>();
+		 ArrayList<String> lastNameList = new ArrayList<String>();
 		try {
 			String sql = "select CUST_FIRST_NAME,CUST_LAST_NAME from DEMO_CUSTOMERS";
 			ResultSet result;
