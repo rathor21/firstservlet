@@ -25,17 +25,16 @@ import javax.servlet.http.*;
 @WebServlet("/HelloWorld")
 public class HelloWorld extends HttpServlet {
 	static Connection conn = null;
-
-	private String message;
+	static ArrayList<String> firstNameList = new ArrayList<String>();
+	static ArrayList<String> lastNameList = new ArrayList<String>();
+	private String message = "";
 
 	public void init() throws ServletException {
 		// Do required initialization
-		
+
 		openConnection();
-		
-		
+
 	}
-		
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -46,7 +45,7 @@ public class HelloWorld extends HttpServlet {
 		// PrintWriter out = response.getWriter();
 		
 		try {
-			String sql = "select CUST_FIRST_NAME,CUST_LAST_NAME from DEMO_CUSTOMERS where CUSTOMER_ID = 2";
+			String sql = "select CUST_FIRST_NAME,CUST_LAST_NAME from DEMO_CUSTOMERS";
 			ResultSet result;
 			result = getFromDB(sql);
 			String firstName = "";
@@ -54,9 +53,18 @@ public class HelloWorld extends HttpServlet {
 			while(result.next()){
 			firstName = result.getString("CUST_FIRST_NAME");
 			lastName = result.getString("CUST_LAST_NAME");
-			
+			firstNameList.add(firstName);
+			lastNameList.add(lastName);
 			}
-			message = firstName + " " + lastName;
+			message += "<div class=\"container\"><h2>Customer Info</h2><p>Customer Names</p> "
+					+ "<table class= \"table\"><thead><tr><th>Firstname</th><th>Lastname</th></tr></thead><tbody>";
+					for (int i = 0; i < firstNameList.size(); i++){
+			firstName = firstNameList.get(i);
+			lastName = lastNameList.get(i);
+		
+					message += "<tr><td>"+firstName + "</td><td>" + lastName + "</td></tr>";
+			}
+			message += "</tbody></table></div>";
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -72,7 +80,6 @@ public class HelloWorld extends HttpServlet {
 	public void destroy() {
 		// do nothing.
 	}
-
 
 	public static void openConnection() {
 		String url = "jdbc:oracle:thin:testuser/password@localhost";
@@ -94,7 +101,7 @@ public class HelloWorld extends HttpServlet {
 	}
 
 	public static void updateDB(String sql) throws SQLException {
-		
+
 		PreparedStatement preStatement = conn.prepareStatement(sql);
 
 		preStatement.setQueryTimeout(10);
